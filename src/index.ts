@@ -125,7 +125,7 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 	}
 
 	return {
-		name: 'vite-plugin-html-inject',
+		name: 'vite-plugin-fragments',
 		configResolved(resolvedConfig) {
 			config = resolvedConfig;
 		},

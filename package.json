@@ -1,5 +1,5 @@
 {
-	"name": "vite-plugin-html-inject",
+	"name": "vite-plugin-fragments",
 	"version": "1.1.2",
 	"description": "Split your index.html into multiple files and inject them where ever you want!",
 	"files": [
@@ -31,7 +31,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@github.com/donnikitos/vite-plugin-html-inject.git"
+		"url": "git+ssh://git@github.com/diogotl/vite-plugin-html-inject.git"
 	},
 	"keywords": [
 		"vite",
@@ -46,9 +46,9 @@
 	"author": "Nikita 'donnikitos' Nitichevski <me@donnikitos.com> (https://donnikitos.com/)",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/donnikitos/vite-plugin-html-inject/issues"
+		"url": "https://github.com/diogotl/vite-plugin-html-inject/issues"
 	},
-	"homepage": "https://github.com/donnikitos/vite-plugin-html-inject#readme",
+	"homepage": "https://github.com/diogotl/vite-plugin-html-inject#readme",
 	"devDependencies": {
 		"@types/node": "^20.11.5",
 		"typescript": "^5.3.3",
