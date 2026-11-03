@@ -35,7 +35,11 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 
 	const fileList = new Set<string>();
 
-	async function renderSnippets(code: string, codePath: string) {
+	/**
+	 * @param currentFile Absolute path of the file `code` was read from.
+	 *   Relative (`./`) sources resolve against its directory.
+	 */
+	async function renderSnippets(code: string, currentFile: string) {
 		if (!config) {
 			return code;
 		}
@@ -58,31 +62,27 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 				);
 			}
 
-			let root = config.root;
+			// Relative sources are relative to the including file,
+			// everything else is relative to the project root.
+			const baseDir = url.startsWith('.')
+				? path.dirname(currentFile)
+				: config.root;
 
-			if (url.startsWith('.')) {
-				root = path.dirname(root + codePath);
-			} else {
-				url = '/' + url;
-			}
+			let target = path.resolve(baseDir, url);
 
-			if (!(url.endsWith('.htm') || url.endsWith('.html'))) {
+			if (!(target.endsWith('.htm') || target.endsWith('.html'))) {
 				['html', 'htm'].some((item) => {
-					const fileName = '/index.' + item;
+					const indexFile = path.join(target, 'index.' + item);
 
-					const filePath = normalizePath(
-						path.join(root, url, fileName),
-					);
-
-					if (fs.existsSync(filePath)) {
-						url += fileName;
+					if (fs.existsSync(indexFile)) {
+						target = indexFile;
 
 						return true;
 					}
 				});
 			}
 
-			const filePath = normalizePath(path.join(root, url));
+			const filePath = normalizePath(target);
 			if (pluginConfig?.debug?.logPath) {
 				console.log('Trying to include ', filePath);
 			}
@@ -110,7 +110,7 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 					);
 				}
 
-				out = await renderSnippets(data, url);
+				out = await renderSnippets(data, filePath);
 			} catch (error) {
 				if (error instanceof Error) {
 					throw new Error('injectHTML: ' + error.message);
@@ -140,7 +140,7 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 		transformIndexHtml: {
 			order: 'pre',
 			handler(html, ctx) {
-				return renderSnippets(html, ctx.path);
+				return renderSnippets(html, ctx.filename);
 			},
 		},
 	};
