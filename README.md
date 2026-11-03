@@ -16,6 +16,7 @@ Split your `index.html` into smaller, reusable HTML fragments. The plugin inline
 - [Options](#options)
 - [Limitations](#limitations)
 - [Debugging](#debugging)
+- [Development](#development)
 - [For AI agents](#for-ai-agents)
 - [Credits](#credits)
 
@@ -161,6 +162,24 @@ injectHTML({
 	},
 });
 ```
+
+## Development
+
+```sh
+pnpm install
+pnpm test        # run the test suite
+pnpm lint        # Biome
+pnpm typecheck   # TypeScript
+pnpm example     # dev server for examples/basic
+```
+
+### Releases
+
+Releases are automated with [Changesets](https://github.com/changesets/changesets) and npm trusted publishing:
+
+1. Describe your change with `pnpm changeset` and push it to `master`.
+2. The Release workflow opens a `chore: release` pull request with the new version and changelog.
+3. Merging that pull request publishes the package to npm, pushes the `vX.Y.Z` tag and creates the GitHub release.
 
 ## For AI agents
 
