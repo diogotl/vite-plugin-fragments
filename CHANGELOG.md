@@ -1,5 +1,11 @@
 # vite-plugin-fragments
 
+## 1.3.1
+
+### Patch Changes
+
+- 2779e27: Document the development commands and the automated release flow in the README.
+
 ## 1.3.0
 
 ### Minor Changes
