@@ -23,7 +23,6 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
-          registry-url: https://registry.npmjs.org
 
       # Trusted publishing needs npm 11.5.1 or newer.
       - run: npm install -g npm@latest
@@ -36,12 +35,24 @@ jobs:
 
       - run: pnpm test
 
+      # changeset publish passes --no-git-checks, which npm rejects,
+      # so the package is published with npm directly.
       - uses: changesets/action@v1
+        id: changesets
         with:
           version: pnpm changeset:version
-          publish: pnpm changeset publish
+          publish: npm publish --access public --provenance
           commit: "chore: release"
           title: "chore: release"
-          createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag and create GitHub release
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+          gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --generate-notes
