@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>vite-plugin-fragments example</title>
+	</head>
+	<body>
+		<load src="src/header" />
+		<main>
+			<load src="src/card.html" title="Hello" text="Injected at build time" />
+			<load src="src/card.html" title="Again" text="Same fragment, different arguments" />
+		</main>
+		<load src="src/footer" />
+	</body>
+</html>

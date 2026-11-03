@@ -32,7 +32,9 @@
 		"format": "biome check --write .",
 		"changeset": "changeset",
 		"changeset:version": "changeset version",
-		"release": "pnpm build && pnpm test && changeset publish"
+		"release": "pnpm build && pnpm test && changeset publish",
+		"example": "vite examples/basic",
+		"example:build": "vite build examples/basic --outDir ../../.example-dist --emptyOutDir"
 	},
 	"repository": {
 		"type": "git",

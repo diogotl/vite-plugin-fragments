@@ -379,6 +379,26 @@ describe('hot reload', () => {
 	});
 });
 
+describe('example project', () => {
+	it('builds examples/basic with nested fragments', async () => {
+		const result = (await build({
+			root: path.resolve('examples/basic'),
+			configFile: path.resolve('examples/basic/vite.config.ts'),
+			logLevel: 'silent',
+			build: { write: false },
+		})) as Rollup.RollupOutput;
+
+		const html = result.output.find((item) => item.fileName === 'index.html');
+		const source = html?.type === 'asset' ? String(html.source) : '';
+
+		expect(source).not.toContain('<load');
+		expect(source).toContain('<h2>Hello</h2>');
+		expect(source).toContain('<h2>Again</h2>');
+		expect(source).toContain('<a href="/">Home</a>');
+		expect(source).toContain('&copy; example');
+	});
+});
+
 describe('dev server', () => {
 	it('injects partials when serving index.html', async () => {
 		const root = createProject({
