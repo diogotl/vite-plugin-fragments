@@ -41,3 +41,4 @@ Guidance for AI coding agents working in this repository.
 - Circular includes are detected with the chain of files that led to the current one.
 - HMR: the plugin registers `hotUpdate` (Vite 6+) and `handleHotUpdate` (Vite 5). Both send a full reload when an included file changes.
 - The package is ESM only and declares Vite as a peer dependency.
+- CI runs the tests on Vite 5, 6, 7 and 8. Vite 5 uses Vitest 3, because Vitest 5 requires Vite 6+.

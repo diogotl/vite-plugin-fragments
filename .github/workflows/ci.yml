@@ -27,3 +27,33 @@ jobs:
       - run: pnpm test
 
       - run: pnpm build
+
+  vite-compat:
+    name: Vite ${{ matrix.vite }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Vitest 5 requires Vite 6+, so Vite 5 runs with Vitest 3.
+          - vite: 5
+            vitest: 3
+          - vite: 6
+            vitest: 5
+          - vite: 7
+            vitest: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm add -D vite@^${{ matrix.vite }} vitest@^${{ matrix.vitest }}
+
+      - run: pnpm test
