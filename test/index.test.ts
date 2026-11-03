@@ -426,6 +426,92 @@ describe('debug logging', () => {
 	});
 });
 
+describe('file types', () => {
+	it('includes files with any extension', async () => {
+		const html = await renderBuild({
+			'index.html': '<body><load src="icons/logo.svg" /></body>',
+			'icons/logo.svg': '<svg><circle r="1"/></svg>',
+		});
+
+		expect(html).toContain('<body><svg><circle r="1"/></svg></body>');
+	});
+
+	it('includes files whose extension is upper case', async () => {
+		const html = await renderBuild({
+			'index.html': '<body><load src="src/Page.HTML" /></body>',
+			'src/Page.HTML': '<p>Upper</p>',
+		});
+
+		expect(html).toContain('<body><p>Upper</p></body>');
+	});
+
+	it('still resolves a directory to index.htm when there is no index.html', async () => {
+		const html = await renderBuild({
+			'index.html': '<body><load src="src/footer" /></body>',
+			'src/footer/index.htm': '<footer>F</footer>',
+		});
+
+		expect(html).toContain('<footer>F</footer>');
+	});
+});
+
+describe('placeholder warnings', () => {
+	type Logger = {
+		info: ReturnType<typeof vi.fn>;
+		warn: ReturnType<typeof vi.fn>;
+	};
+
+	async function run(options: Parameters<typeof injectHTML>[0]) {
+		const root = createProject({
+			'index.html': '<body><load src="src/x.html" name="ok" /></body>',
+			'src/x.html': '<p>{=$name} and {=$missing}</p>',
+		});
+		const logger: Logger = { info: vi.fn(), warn: vi.fn() };
+		const plugin = injectHTML(options) as unknown as {
+			configResolved: (config: { root: string; logger: Logger }) => void;
+			transformIndexHtml: {
+				handler: (html: string, ctx: { filename: string }) => Promise<string>;
+			};
+		};
+
+		plugin.configResolved({ root, logger });
+		const html = await plugin.transformIndexHtml.handler(
+			fs.readFileSync(path.join(root, 'index.html'), 'utf8'),
+			{ filename: path.join(root, 'index.html') },
+		);
+
+		return { html, logger };
+	}
+
+	it('warns about placeholders without a value when enabled', async () => {
+		const { html, logger } = await run({
+			warn: { unresolvedPlaceholders: true },
+		});
+
+		expect(html).toContain('{=$missing}');
+		expect(logger.warn).toHaveBeenCalledTimes(1);
+		expect(logger.warn).toHaveBeenCalledWith(
+			expect.stringContaining('{=$missing}'),
+		);
+	});
+
+	it('does not warn by default', async () => {
+		const { logger } = await run({});
+
+		expect(logger.warn).not.toHaveBeenCalled();
+	});
+
+	it('does not warn when replace.undefined fills the placeholders', async () => {
+		const { html, logger } = await run({
+			warn: { unresolvedPlaceholders: true },
+			replace: { undefined: 'N/A' },
+		});
+
+		expect(html).toContain('<p>ok and N/A</p>');
+		expect(logger.warn).not.toHaveBeenCalled();
+	});
+});
+
 describe('dev server', () => {
 	it('injects partials when serving index.html', async () => {
 		const root = createProject({

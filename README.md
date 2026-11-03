@@ -113,7 +113,7 @@ Placeholders with no matching attribute are left as they are, unless you set [`r
 | `./` or `../`     | The folder of the file that contains the `<load />` tag        | `src="./nav.html"` inside `sidebar.html` |
 | anything else     | The Vite [`root`](https://vite.dev/config/shared-options#root) | `src="src/html/footer"`                  |
 
-If the path does not end in `.html` or `.htm`, the plugin looks for `index.html` and then `index.htm` inside that folder.
+A path that is a file is included as is, whatever its extension (`.html`, `.svg`, `.md`, ...). A directory resolves to its `index.html`, or `index.htm` if that is missing.
 
 Includes can be nested. Relative paths always resolve from the file that contains them, so a fragment can be moved to another folder together with its own relative includes.
 
@@ -125,6 +125,9 @@ injectHTML({
 	sourceAttr: 'file', // Default: 'src'
 	replace: {
 		undefined: 'N/A', // Replace placeholders that received no value. Default: keep them
+	},
+	warn: {
+		unresolvedPlaceholders: true, // Warn about {=$name} placeholders with no value. Default: false
 	},
 	debug: {
 		logPath: true, // Log every file that is included. Default: false

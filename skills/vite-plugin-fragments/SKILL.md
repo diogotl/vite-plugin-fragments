@@ -29,8 +29,8 @@ export default defineConfig({
 
 - The tag must be self-closing: `<load src="..." />`.
 - Attribute values must use double quotes and cannot contain `"`.
-- A `src` that is a file (ends in `.html` or `.htm`) is included as is.
-- Any other `src` is a directory: the plugin includes its `index.html`, or `index.htm`.
+- A `src` that is a file is included as is, whatever its extension.
+- A `src` that is a directory includes its `index.html`, or `index.htm` if that is missing.
 
 ## Paths
 
@@ -59,6 +59,7 @@ injectHTML({
 	tagName: 'load', // tag to match
 	sourceAttr: 'src', // attribute holding the path
 	replace: { undefined: 'N/A' }, // replacement for placeholders without a value
+	warn: { unresolvedPlaceholders: true }, // warn about {=$name} placeholders with no value
 	debug: { logPath: true }, // log every included file through the Vite logger
 });
 ```

@@ -32,6 +32,7 @@ export type InjectHTMLConfig = {
 	sourceAttr?: string;
 	replace?: { undefined?: string };
 	debug?: { logPath?: boolean };
+	warn?: { unresolvedPlaceholders?: boolean };
 };
 
 function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
@@ -95,11 +96,12 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 
 			const target = path.resolve(baseDir, url);
 
-			// Directories resolve to their index.html or index.htm.
-			const candidates =
-				target.endsWith('.htm') || target.endsWith('.html')
-					? [target]
-					: [path.join(target, 'index.html'), path.join(target, 'index.htm')];
+			// A file is used as is. A directory resolves to its index.html or index.htm.
+			const candidates = [
+				target,
+				path.join(target, 'index.html'),
+				path.join(target, 'index.htm'),
+			];
 
 			let found: string | undefined;
 			for (const candidate of candidates) {
@@ -150,6 +152,14 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 			const undefinedValue = cfg.replace?.undefined;
 			if (undefinedValue) {
 				data = data.replace(replaceAttrMatcher, () => undefinedValue);
+			}
+
+			if (cfg.warn?.unresolvedPlaceholders && !undefinedValue) {
+				for (const [placeholder] of data.matchAll(replaceAttrMatcher)) {
+					config.logger.warn(
+						`[vite-plugin-fragments] No value for ${placeholder} in ${filePath} (included from ${currentFile})`,
+					);
+				}
 			}
 
 			const out = await renderSnippets(data, filePath, [...chain, currentFile]);
