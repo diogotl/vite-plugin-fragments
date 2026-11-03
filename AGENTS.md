@@ -31,7 +31,7 @@ Guidance for AI coding agents working in this repository.
 - Commit directly on `master`. Do not create a branch per change unless asked.
 - Commit messages use Conventional Commits, in English, one line, no body and no co-author trailers.
 - Add a changeset (`pnpm changeset`) for user-visible changes.
-- Do not publish to npm. Publishing needs the maintainer's one-time password.
+- Do not publish to npm by hand. Releases are automated: pushing a changeset to `master` makes the Release workflow open a "chore: release" PR; merging it publishes to npm (trusted publishing), pushes the `vX.Y.Z` tag and creates the GitHub release.
 - Keep TypeScript on 5.x. TypeScript 7 breaks `rollup-plugin-dts`, which `unbuild` uses for declaration files.
 
 ## Design notes
