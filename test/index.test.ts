@@ -246,7 +246,7 @@ describe('errors', () => {
 			renderBuild({
 				'index.html': '<body><load label="x" /></body>',
 			}),
-		).rejects.toThrow("Source attribute 'src' missing");
+		).rejects.toThrow("Source attribute 'src' is missing in");
 	});
 
 	it('throws when the file does not exist', async () => {
@@ -254,7 +254,34 @@ describe('errors', () => {
 			renderBuild({
 				'index.html': '<body><load src="src/nope.html" /></body>',
 			}),
-		).rejects.toThrow(/injectHTML: .*ENOENT/);
+		).rejects.toThrow(
+			/Could not find "src\/nope.html" included from .*index\.html\./,
+		);
+	});
+
+	it('lists every path it tried for a directory', async () => {
+		const error = await renderBuild({
+			'index.html': '<body><load src="src/empty" /></body>',
+		}).catch((err: Error) => err);
+
+		expect(error).toBeInstanceOf(Error);
+		expect((error as Error).message).toContain('Tried:');
+		expect((error as Error).message).toContain(
+			path.join('src', 'empty', 'index.html'),
+		);
+		expect((error as Error).message).toContain(
+			path.join('src', 'empty', 'index.htm'),
+		);
+	});
+
+	it('names the including file when a nested include is missing', async () => {
+		const error = await renderBuild({
+			'index.html': '<body><load src="./src/layout.html" /></body>',
+			'src/layout.html': '<main><load src="./missing.html" /></main>',
+		}).catch((err: Error) => err);
+
+		expect((error as Error).message).toContain('"./missing.html"');
+		expect((error as Error).message).toContain(path.join('src', 'layout.html'));
 	});
 });
 

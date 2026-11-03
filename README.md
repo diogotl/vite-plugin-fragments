@@ -107,10 +107,10 @@ Placeholders with no matching attribute are left as they are, unless you set [`r
 
 ## How paths are resolved
 
-| `src` starts with | Resolved against                                                   | Example                                  |
-| ----------------- | ------------------------------------------------------------------ | ---------------------------------------- |
-| `./` or `../`     | The folder of the file that contains the `<load />` tag            | `src="./nav.html"` inside `sidebar.html` |
-| anything else     | The Vite [`root`](https://vite.dev/config/shared-options#root)     | `src="src/html/footer"`                  |
+| `src` starts with | Resolved against                                               | Example                                  |
+| ----------------- | -------------------------------------------------------------- | ---------------------------------------- |
+| `./` or `../`     | The folder of the file that contains the `<load />` tag        | `src="./nav.html"` inside `sidebar.html` |
+| anything else     | The Vite [`root`](https://vite.dev/config/shared-options#root) | `src="src/html/footer"`                  |
 
 If the path does not end in `.html` or `.htm`, the plugin looks for `index.html` and then `index.htm` inside that folder.
 

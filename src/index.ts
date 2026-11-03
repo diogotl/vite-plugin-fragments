@@ -12,7 +12,7 @@ function escapeRegExp(input: string) {
 	return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-type InjectHTMLConfig = {
+export type InjectHTMLConfig = {
 	tagName?: string;
 	sourceAttr?: string;
 	replace?: { undefined?: string };
@@ -54,7 +54,7 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 
 			if (typeof url !== 'string') {
 				throw new Error(
-					`injectHTML: Source attribute '${sourceAttr}' missing in\r\n${tag}`,
+					`injectHTML: Source attribute '${sourceAttr}' is missing in ${currentFile}:\n${tag}`,
 				);
 			}
 
@@ -64,49 +64,49 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 				? path.dirname(currentFile)
 				: config.root;
 
-			let target = path.resolve(baseDir, url);
+			const target = path.resolve(baseDir, url);
 
-			if (!(target.endsWith('.htm') || target.endsWith('.html'))) {
-				for (const item of ['html', 'htm']) {
-					const indexFile = path.join(target, `index.${item}`);
+			// Directories resolve to their index.html or index.htm.
+			const candidates =
+				target.endsWith('.htm') || target.endsWith('.html')
+					? [target]
+					: [path.join(target, 'index.html'), path.join(target, 'index.htm')];
 
-					if (fs.existsSync(indexFile)) {
-						target = indexFile;
+			const found = candidates.find((candidate) => fs.existsSync(candidate));
 
-						break;
-					}
-				}
+			if (!found) {
+				const tried = candidates.map((candidate) => `  - ${candidate}`);
+
+				throw new Error(
+					[
+						`injectHTML: Could not find "${url}" included from ${currentFile}.`,
+						'Tried:',
+						...tried,
+					].join('\n'),
+				);
 			}
 
-			const filePath = normalizePath(target);
+			const filePath = normalizePath(found);
 			if (pluginConfig?.debug?.logPath) {
 				console.log('Trying to include ', filePath);
 			}
 			fileList.add(filePath);
 
-			let out = tag;
-			try {
-				let data = fs.readFileSync(filePath, 'utf8');
+			let data = fs.readFileSync(filePath, 'utf8');
 
-				for (const [name, value] of attrs) {
-					const attrRegExp = new RegExp(`{=\\$${escapeRegExp(name)}}`, 'gs');
-					// ^ Node below version 15.0 has no .replaceAll()
+			for (const [name, value] of attrs) {
+				const attrRegExp = new RegExp(`{=\\$${escapeRegExp(name)}}`, 'gs');
+				// ^ Node below version 15.0 has no .replaceAll()
 
-					data = data.replace(attrRegExp, () => value);
-				}
-
-				const undefinedValue = cfg.replace?.undefined;
-				if (undefinedValue) {
-					data = data.replace(replaceAttrMatcher, () => undefinedValue);
-				}
-
-				out = await renderSnippets(data, filePath);
-			} catch (error) {
-				if (error instanceof Error) {
-					throw new Error(`injectHTML: ${error.message}`);
-				}
-				throw new Error(`${error}`);
+				data = data.replace(attrRegExp, () => value);
 			}
+
+			const undefinedValue = cfg.replace?.undefined;
+			if (undefinedValue) {
+				data = data.replace(replaceAttrMatcher, () => undefinedValue);
+			}
+
+			const out = await renderSnippets(data, filePath);
 
 			code = code.replace(tag, () => out);
 		}
