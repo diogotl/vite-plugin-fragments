@@ -27,7 +27,9 @@
 		"build": "npx unbuild",
 		"prepack": "npm run build",
 		"test": "vitest run",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"lint": "biome check .",
+		"format": "biome check --write ."
 	},
 	"repository": {
 		"type": "git",
@@ -50,6 +52,7 @@
 	},
 	"homepage": "https://github.com/diogotl/vite-plugin-fragments#readme",
 	"devDependencies": {
+		"@biomejs/biome": "^2.6.4",
 		"@types/node": "^24.19.2",
 		"typescript": "^5.9.3",
 		"unbuild": "^3.6.1",

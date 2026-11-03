@@ -1,6 +1,6 @@
-import { normalizePath, Plugin, ResolvedConfig } from 'vite';
-import path from 'path';
-import fs from 'fs';
+import fs from 'node:fs';
+import path from 'node:path';
+import { normalizePath, type Plugin, type ResolvedConfig } from 'vite';
 
 const attrNameExpr = '[a-z0-9_-]+';
 const attrDataExpr = '[^"]*';
@@ -20,11 +20,7 @@ type InjectHTMLConfig = {
 };
 
 function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
-	const {
-		tagName = 'load',
-		sourceAttr = 'src',
-		...cfg
-	} = { ...pluginConfig };
+	const { tagName = 'load', sourceAttr = 'src', ...cfg } = { ...pluginConfig };
 
 	let config: undefined | ResolvedConfig;
 
@@ -43,7 +39,7 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 		const matches = code.matchAll(tagMatcher);
 
 		for (const match of matches) {
-			let [tag, _attrs] = match;
+			const [tag, _attrs] = match;
 
 			const attrs = new Map();
 			for (const [, name, value] of _attrs.trim().matchAll(attrMatcher)) {
@@ -63,23 +59,21 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 			if (url.startsWith('.')) {
 				root = path.dirname(root + codePath);
 			} else {
-				url = '/' + url;
+				url = `/${url}`;
 			}
 
 			if (!(url.endsWith('.htm') || url.endsWith('.html'))) {
-				['html', 'htm'].some((item) => {
-					const fileName = '/index.' + item;
+				for (const item of ['html', 'htm']) {
+					const fileName = `/index.${item}`;
 
-					const filePath = normalizePath(
-						path.join(root, url, fileName),
-					);
+					const filePath = normalizePath(path.join(root, url, fileName));
 
 					if (fs.existsSync(filePath)) {
 						url += fileName;
 
-						return true;
+						break;
 					}
-				});
+				}
 			}
 
 			const filePath = normalizePath(path.join(root, url));
@@ -93,10 +87,7 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 				let data = fs.readFileSync(filePath, 'utf8');
 
 				for (const [name, value] of attrs) {
-					const attrRegExp = new RegExp(
-						'{=\\$' + escapeRegExp(name) + '}',
-						'gs',
-					);
+					const attrRegExp = new RegExp(`{=\\$${escapeRegExp(name)}}`, 'gs');
 					// ^ Node below version 15.0 has no .replaceAll()
 
 					data = data.replace(attrRegExp, () => value);
@@ -104,16 +95,13 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 
 				const undefinedValue = cfg.replace?.undefined;
 				if (undefinedValue) {
-					data = data.replace(
-						replaceAttrMatcher,
-						() => undefinedValue,
-					);
+					data = data.replace(replaceAttrMatcher, () => undefinedValue);
 				}
 
 				out = await renderSnippets(data, url);
 			} catch (error) {
 				if (error instanceof Error) {
-					throw new Error('injectHTML: ' + error.message);
+					throw new Error(`injectHTML: ${error.message}`);
 				}
 				throw new Error(`${error}`);
 			}

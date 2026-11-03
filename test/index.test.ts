@@ -1,8 +1,8 @@
-import { afterEach, describe, expect, it } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { build, createServer, type Rollup } from 'vite';
+import { afterEach, describe, expect, it } from 'vitest';
 import injectHTML from '../src/index';
 
 type Options = Parameters<typeof injectHTML>[0];
@@ -46,7 +46,7 @@ async function renderBuild(files: Files, options?: Options) {
 	})) as Rollup.RollupOutput;
 
 	const html = result.output.find((item) => item.fileName === 'index.html');
-	if (!html || html.type !== 'asset') {
+	if (html?.type !== 'asset') {
 		throw new Error('index.html not found in build output');
 	}
 
