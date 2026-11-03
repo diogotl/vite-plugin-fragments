@@ -16,6 +16,12 @@
 	],
 	"license": "MIT",
 	"author": "Nikita 'donnikitos' Nitichevski <me@donnikitos.com> (https://donnikitos.com/)",
+	"contributors": [
+		{
+			"name": "Diogo",
+			"url": "https://github.com/diogotl"
+		}
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/diogotl/vite-plugin-fragments.git"
