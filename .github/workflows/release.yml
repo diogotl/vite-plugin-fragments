@@ -35,20 +35,27 @@ jobs:
 
       - run: pnpm test
 
-      # changeset publish passes --no-git-checks, which npm rejects,
-      # so the package is published with npm directly.
+      # Opens or updates the "chore: release" pull request. Merging it bumps the version.
       - uses: changesets/action@v1
-        id: changesets
         with:
           version: pnpm changeset:version
-          publish: npm publish --access public --provenance
           commit: "chore: release"
           title: "chore: release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Runs on every push, but only tags and releases a version that is on npm
-      # and does not have a GitHub release yet.
+      # Runs on every push, but only publishes a version that is not on npm yet.
+      # changeset publish passes --no-git-checks, which npm rejects, so npm publish is used.
+      - name: Publish to npm if the version is new
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "vite-plugin-fragments@$VERSION" version >/dev/null 2>&1; then
+            echo "$VERSION is already on npm"
+            exit 0
+          fi
+          npm publish --access public --provenance
+
+      # Only tags and releases a version that is on npm and does not have a GitHub release yet.
       - name: Tag and create GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
