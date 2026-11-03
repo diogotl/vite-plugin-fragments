@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { build, createServer, type Rollup } from 'vite';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import injectHTML from '../src/index';
 
 type Options = Parameters<typeof injectHTML>[0];
@@ -396,6 +396,33 @@ describe('example project', () => {
 		expect(source).toContain('<h2>Again</h2>');
 		expect(source).toContain('<a href="/">Home</a>');
 		expect(source).toContain('&copy; example');
+	});
+});
+
+describe('debug logging', () => {
+	it('logs included files through the Vite logger', async () => {
+		const root = createProject({
+			'index.html': '<body><load src="src/x.html" /></body>',
+			'src/x.html': '<p>X</p>',
+		});
+		const info = vi.fn();
+		const plugin = injectHTML({ debug: { logPath: true } }) as unknown as {
+			configResolved: (config: {
+				root: string;
+				logger: { info: typeof info };
+			}) => void;
+			transformIndexHtml: {
+				handler: (html: string, ctx: { filename: string }) => Promise<string>;
+			};
+		};
+
+		plugin.configResolved({ root, logger: { info } });
+		await plugin.transformIndexHtml.handler(
+			fs.readFileSync(path.join(root, 'index.html'), 'utf8'),
+			{ filename: path.join(root, 'index.html') },
+		);
+
+		expect(info).toHaveBeenCalledWith(expect.stringContaining('Including'));
 	});
 });
 

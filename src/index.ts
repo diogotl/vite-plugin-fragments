@@ -134,7 +134,7 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 			}
 
 			if (pluginConfig?.debug?.logPath) {
-				console.log('Trying to include ', filePath);
+				config.logger.info(`[vite-plugin-fragments] Including ${filePath}`);
 			}
 			fileList.add(filePath);
 
