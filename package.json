@@ -31,7 +31,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@github.com/diogotl/vite-plugin-html-inject.git"
+		"url": "git+ssh://git@github.com/diogotl/vite-plugin-fragments.git"
 	},
 	"keywords": [
 		"vite",
@@ -46,9 +46,9 @@
 	"author": "Nikita 'donnikitos' Nitichevski <me@donnikitos.com> (https://donnikitos.com/)",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/diogotl/vite-plugin-html-inject/issues"
+		"url": "https://github.com/diogotl/vite-plugin-fragments/issues"
 	},
-	"homepage": "https://github.com/diogotl/vite-plugin-html-inject#readme",
+	"homepage": "https://github.com/diogotl/vite-plugin-fragments#readme",
 	"devDependencies": {
 		"@types/node": "^20.11.5",
 		"typescript": "^5.3.3",

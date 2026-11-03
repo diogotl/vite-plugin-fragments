@@ -1,7 +1,7 @@
 # vite-plugin-fragments
 
-[![npm](https://img.shields.io/npm/dt/vite-plugin-fragments?style=for-the-badge)](https://www.npmjs.com/package/vite-plugin-fragments) ![GitHub Repo stars](https://img.shields.io/github/stars/diogotl/vite-plugin-html-inject?label=GitHub%20Stars&style=for-the-badge) [![GitHub](https://img.shields.io/github/license/diogotl/vite-plugin-html-inject?color=blue&style=for-the-badge)](https://github.com/diogotl/vite-plugin-html-inject/blob/master/LICENSE)
-![GitHub last commit](https://img.shields.io/github/last-commit/diogotl/vite-plugin-html-inject?style=for-the-badge) [![Issues](https://img.shields.io/github/issues/diogotl/vite-plugin-html-inject?style=for-the-badge)](https://github.com/diogotl/vite-plugin-html-inject/issues)
+[![npm](https://img.shields.io/npm/dt/vite-plugin-fragments?style=for-the-badge)](https://www.npmjs.com/package/vite-plugin-fragments) ![GitHub Repo stars](https://img.shields.io/github/stars/diogotl/vite-plugin-fragments?label=GitHub%20Stars&style=for-the-badge) [![GitHub](https://img.shields.io/github/license/diogotl/vite-plugin-fragments?color=blue&style=for-the-badge)](https://github.com/diogotl/vite-plugin-fragments/blob/master/LICENSE)
+![GitHub last commit](https://img.shields.io/github/last-commit/diogotl/vite-plugin-fragments?style=for-the-badge) [![Issues](https://img.shields.io/github/issues/diogotl/vite-plugin-fragments?style=for-the-badge)](https://github.com/diogotl/vite-plugin-fragments/issues)
 
 Split your `index.html` into smaller, reusable static HTML pieces.
 
