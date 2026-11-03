@@ -1,6 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { normalizePath, type Plugin, type ResolvedConfig } from 'vite';
+import {
+	normalizePath,
+	type Plugin,
+	type ResolvedConfig,
+	type ViteDevServer,
+} from 'vite';
+
+type HotUpdateContext = { file: string; server: ViteDevServer };
 
 const attrNameExpr = '[a-z0-9_-]+';
 const attrDataExpr = '[^"]*';
@@ -30,6 +37,15 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 	);
 
 	const fileList = new Set<string>();
+
+	function reloadIfIncluded({ file, server }: HotUpdateContext) {
+		if (fileList.has(file)) {
+			server.ws.send({
+				type: 'full-reload',
+				path: '*',
+			});
+		}
+	}
 
 	/**
 	 * @param currentFile Absolute path of the file `code` was read from.
@@ -135,14 +151,10 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 		configResolved(resolvedConfig) {
 			config = resolvedConfig;
 		},
-		handleHotUpdate({ file, server }) {
-			if (fileList.has(file)) {
-				server.ws.send({
-					type: 'full-reload',
-					path: '*',
-				});
-			}
-		},
+		// Vite 6+ uses `hotUpdate` and ignores `handleHotUpdate` when both exist.
+		// `handleHotUpdate` is kept for Vite 5.
+		handleHotUpdate: reloadIfIncluded,
+		hotUpdate: reloadIfIncluded,
 		transformIndexHtml: {
 			order: 'pre',
 			handler(html, ctx) {

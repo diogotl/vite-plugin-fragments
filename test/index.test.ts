@@ -316,6 +316,69 @@ describe('cycles', () => {
 	});
 });
 
+describe('hot reload', () => {
+	type Sent = unknown[];
+	type HotHook = (ctx: {
+		file: string;
+		server: { ws: { send: (payload: unknown) => void } };
+	}) => void;
+	type TransformHook = {
+		handler: (
+			html: string,
+			ctx: { filename: string },
+		) => string | Promise<string>;
+	};
+
+	async function setup() {
+		const root = createProject({
+			'index.html': '<body><load src="src/x.html" /></body>',
+			'src/x.html': '<p>X</p>',
+			'src/other.html': '<p>Other</p>',
+		});
+		const plugin = injectHTML() as unknown as {
+			configResolved: (config: { root: string }) => void;
+			hotUpdate: HotHook;
+			handleHotUpdate: HotHook;
+			transformIndexHtml: TransformHook;
+		};
+
+		plugin.configResolved({ root });
+		await plugin.transformIndexHtml.handler(
+			fs.readFileSync(path.join(root, 'index.html'), 'utf8'),
+			{ filename: path.join(root, 'index.html') },
+		);
+
+		const sent: Sent = [];
+		const server = { ws: { send: (payload: unknown) => sent.push(payload) } };
+
+		return { root, plugin, sent, server };
+	}
+
+	it('sends a full reload when an included file changes (hotUpdate)', async () => {
+		const { root, plugin, sent, server } = await setup();
+
+		plugin.hotUpdate({ file: path.join(root, 'src/x.html'), server });
+
+		expect(sent).toEqual([{ type: 'full-reload', path: '*' }]);
+	});
+
+	it('keeps handleHotUpdate working for Vite 5', async () => {
+		const { root, plugin, sent, server } = await setup();
+
+		plugin.handleHotUpdate({ file: path.join(root, 'src/x.html'), server });
+
+		expect(sent).toEqual([{ type: 'full-reload', path: '*' }]);
+	});
+
+	it('ignores files that are not included', async () => {
+		const { root, plugin, sent, server } = await setup();
+
+		plugin.hotUpdate({ file: path.join(root, 'src/other.html'), server });
+
+		expect(sent).toEqual([]);
+	});
+});
+
 describe('dev server', () => {
 	it('injects partials when serving index.html', async () => {
 		const root = createProject({
