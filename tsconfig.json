@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"outDir": "dist",
 		"target": "ES2021",
-		"moduleResolution": "Node",
+		"moduleResolution": "Bundler",
 		"strict": true,
 		"declaration": true,
 		"sourceMap": true,

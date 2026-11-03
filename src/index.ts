@@ -138,11 +138,6 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 			}
 		},
 		transformIndexHtml: {
-			enforce: 'pre',
-			transform(html, ctx) {
-				return renderSnippets(html, ctx.path);
-			},
-			// ^ Keeping for Vite below version 4.0.0
 			order: 'pre',
 			handler(html, ctx) {
 				return renderSnippets(html, ctx.path);
