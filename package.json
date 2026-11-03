@@ -1,23 +1,57 @@
 {
 	"name": "vite-plugin-fragments",
 	"version": "1.2.0",
-	"description": "Split your index.html into multiple files and inject them where ever you want!",
-	"files": [
-		"dist"
+	"description": "Split your index.html into reusable HTML fragments and inject them at build time and in dev.",
+	"keywords": [
+		"vite",
+		"vite-plugin",
+		"html",
+		"html-include",
+		"html-partials",
+		"fragments",
+		"partials",
+		"include",
+		"template",
+		"loader"
 	],
+	"license": "MIT",
+	"author": "Nikita 'donnikitos' Nitichevski <me@donnikitos.com> (https://donnikitos.com/)",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/diogotl/vite-plugin-fragments.git"
+	},
+	"bugs": {
+		"url": "https://github.com/diogotl/vite-plugin-fragments/issues"
+	},
+	"homepage": "https://github.com/diogotl/vite-plugin-fragments#readme",
 	"type": "module",
+	"sideEffects": false,
 	"main": "./dist/index.mjs",
+	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.mts",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.mts",
 			"import": "./dist/index.mjs",
 			"default": "./dist/index.mjs"
-		}
+		},
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"engines": {
+		"node": ">=20.19.0"
+	},
+	"peerDependencies": {
+		"vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
 	},
 	"scripts": {
-		"build": "npx unbuild",
-		"prepack": "npm run build",
+		"build": "unbuild",
+		"prepack": "pnpm build",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"lint": "biome check .",
@@ -27,29 +61,6 @@
 		"release": "pnpm build && pnpm test && changeset publish",
 		"example": "vite examples/basic",
 		"example:build": "vite build examples/basic --outDir ../../.example-dist --emptyOutDir"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+ssh://git@github.com/diogotl/vite-plugin-fragments.git"
-	},
-	"keywords": [
-		"vite",
-		"vite-plugin",
-		"load html",
-		"split html",
-		"inject html",
-		"html",
-		"html-loader",
-		"loader"
-	],
-	"author": "Nikita 'donnikitos' Nitichevski <me@donnikitos.com> (https://donnikitos.com/)",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/diogotl/vite-plugin-fragments/issues"
-	},
-	"homepage": "https://github.com/diogotl/vite-plugin-fragments#readme",
-	"peerDependencies": {
-		"vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.6.4",
@@ -61,13 +72,9 @@
 		"vitest": "^5.1.0"
 	},
 	"packageManager": "pnpm@10.0.0",
-	"engines": {
-		"node": ">=20.19.0"
-	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"esbuild"
 		]
-	},
-	"module": "./dist/index.mjs"
+	}
 }
