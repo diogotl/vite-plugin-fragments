@@ -16,6 +16,7 @@ Split your `index.html` into smaller, reusable HTML fragments. The plugin inline
 - [Options](#options)
 - [Limitations](#limitations)
 - [Debugging](#debugging)
+- [For AI agents](#for-ai-agents)
 - [Credits](#credits)
 
 ## Installation
@@ -157,6 +158,12 @@ injectHTML({
 	},
 });
 ```
+
+## For AI agents
+
+The package ships a usage guide for coding agents at `skills/vite-plugin-fragments/SKILL.md`. After installing, agents that support skills can load it; it is triggered by the package name and the `<load />` tag.
+
+Projects can also point their own agent instructions (for example `AGENTS.md` or `CLAUDE.md`) at `node_modules/vite-plugin-fragments/skills/vite-plugin-fragments/SKILL.md`.
 
 ## Credits
 

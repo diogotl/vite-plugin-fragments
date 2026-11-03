@@ -44,7 +44,8 @@
 		"./package.json": "./package.json"
 	},
 	"files": [
-		"dist"
+		"dist",
+		"skills"
 	],
 	"publishConfig": {
 		"access": "public"
