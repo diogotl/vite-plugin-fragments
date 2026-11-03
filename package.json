@@ -29,7 +29,10 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"lint": "biome check .",
-		"format": "biome check --write ."
+		"format": "biome check --write .",
+		"changeset": "changeset",
+		"changeset:version": "changeset version",
+		"release": "pnpm build && pnpm test && changeset publish"
 	},
 	"repository": {
 		"type": "git",
@@ -53,6 +56,7 @@
 	"homepage": "https://github.com/diogotl/vite-plugin-fragments#readme",
 	"devDependencies": {
 		"@biomejs/biome": "^2.6.4",
+		"@changesets/cli": "^3.0.3",
 		"@types/node": "^24.19.2",
 		"typescript": "^5.9.3",
 		"unbuild": "^3.6.1",
