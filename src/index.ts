@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import {
 	normalizePath,
@@ -14,6 +14,14 @@ const attrDataExpr = '[^"]*';
 
 const attrMatcher = new RegExp(`(${attrNameExpr}|)="(${attrDataExpr})"`, 'gsi');
 const replaceAttrMatcher = new RegExp(`{=\\$${attrNameExpr}}`, 'gsi');
+
+async function isFile(file: string) {
+	try {
+		return (await stat(file)).isFile();
+	} catch {
+		return false;
+	}
+}
 
 function escapeRegExp(input: string) {
 	return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -93,7 +101,13 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 					? [target]
 					: [path.join(target, 'index.html'), path.join(target, 'index.htm')];
 
-			const found = candidates.find((candidate) => fs.existsSync(candidate));
+			let found: string | undefined;
+			for (const candidate of candidates) {
+				if (await isFile(candidate)) {
+					found = candidate;
+					break;
+				}
+			}
 
 			if (!found) {
 				const tried = candidates.map((candidate) => `  - ${candidate}`);
@@ -124,7 +138,7 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 			}
 			fileList.add(filePath);
 
-			let data = fs.readFileSync(filePath, 'utf8');
+			let data = await readFile(filePath, 'utf8');
 
 			for (const [name, value] of attrs) {
 				const attrRegExp = new RegExp(`{=\\$${escapeRegExp(name)}}`, 'gs');
