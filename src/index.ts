@@ -34,8 +34,13 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 	/**
 	 * @param currentFile Absolute path of the file `code` was read from.
 	 *   Relative (`./`) sources resolve against its directory.
+	 * @param chain Files that led to `currentFile`, used to detect cycles.
 	 */
-	async function renderSnippets(code: string, currentFile: string) {
+	async function renderSnippets(
+		code: string,
+		currentFile: string,
+		chain: string[] = [],
+	): Promise<string> {
 		if (!config) {
 			return code;
 		}
@@ -87,6 +92,17 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 			}
 
 			const filePath = normalizePath(found);
+
+			if (chain.includes(filePath) || filePath === normalizePath(currentFile)) {
+				throw new Error(
+					[
+						`injectHTML: Circular include of ${filePath}.`,
+						'Include chain:',
+						...[...chain, currentFile, filePath].map((file) => `  - ${file}`),
+					].join('\n'),
+				);
+			}
+
 			if (pluginConfig?.debug?.logPath) {
 				console.log('Trying to include ', filePath);
 			}
@@ -106,7 +122,7 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 				data = data.replace(replaceAttrMatcher, () => undefinedValue);
 			}
 
-			const out = await renderSnippets(data, filePath);
+			const out = await renderSnippets(data, filePath, [...chain, currentFile]);
 
 			code = code.replace(tag, () => out);
 		}
@@ -130,7 +146,7 @@ function injectHTML(pluginConfig?: InjectHTMLConfig): Plugin {
 		transformIndexHtml: {
 			order: 'pre',
 			handler(html, ctx) {
-				return renderSnippets(html, ctx.filename);
+				return renderSnippets(html, ctx.filename, []);
 			},
 		},
 	};

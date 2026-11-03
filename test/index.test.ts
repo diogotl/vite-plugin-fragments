@@ -285,6 +285,37 @@ describe('errors', () => {
 	});
 });
 
+describe('cycles', () => {
+	it('throws on a circular include and shows the chain', async () => {
+		await expect(
+			renderBuild({
+				'index.html': '<body><load src="src/a.html" /></body>',
+				'src/a.html': '<p><load src="./b.html" /></p>',
+				'src/b.html': '<p><load src="./a.html" /></p>',
+			}),
+		).rejects.toThrow(/Circular include of .*a\.html[\s\S]*Include chain/);
+	});
+
+	it('throws when a fragment includes itself', async () => {
+		await expect(
+			renderBuild({
+				'index.html': '<body><load src="src/self.html" /></body>',
+				'src/self.html': '<p><load src="./self.html" /></p>',
+			}),
+		).rejects.toThrow('Circular include');
+	});
+
+	it('allows the same fragment to be included twice in siblings', async () => {
+		const html = await renderBuild({
+			'index.html':
+				'<body><load src="src/x.html" /><load src="src/x.html" /></body>',
+			'src/x.html': '<i>X</i>',
+		});
+
+		expect(html).toContain('<body><i>X</i><i>X</i></body>');
+	});
+});
+
 describe('dev server', () => {
 	it('injects partials when serving index.html', async () => {
 		const root = createProject({
