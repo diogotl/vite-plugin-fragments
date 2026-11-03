@@ -126,10 +126,7 @@ describe('loading files', () => {
 		expect(html).toContain('<header>Relative</header>');
 	});
 
-	// Known bug (point 3): a relative include inside a partial that was
-	// itself included relatively resolves against a broken path.
-	// When fixed, change `it.fails` to `it`.
-	it.fails('resolves nested relative includes', async () => {
+	it('resolves nested relative includes against the including file', async () => {
 		const html = await renderBuild({
 			'index.html': '<body><load src="./src/layout.html" /></body>',
 			'src/layout.html': '<main><load src="./parts/nav.html" /></main>',
@@ -137,6 +134,17 @@ describe('loading files', () => {
 		});
 
 		expect(html).toContain('<main><nav>Nav</nav></main>');
+	});
+
+	it('resolves `../` relative to the including file', async () => {
+		const html = await renderBuild({
+			'index.html': '<body><load src="./src/parts/page.html" /></body>',
+			'src/parts/page.html':
+				'<section><load src="../shared/logo.html" /></section>',
+			'src/shared/logo.html': '<img alt="logo">',
+		});
+
+		expect(html).toContain('<section><img alt="logo"></section>');
 	});
 });
 
