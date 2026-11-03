@@ -47,12 +47,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Runs on every push, but only tags and releases a version that is on npm
+      # and does not have a GitHub release yet.
       - name: Tag and create GitHub release
-        if: steps.changesets.outputs.published == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
+          if ! npm view "vite-plugin-fragments@$VERSION" version >/dev/null 2>&1; then
+            echo "$VERSION is not on npm, nothing to release"
+            exit 0
+          fi
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Release v$VERSION already exists"
+            exit 0
+          fi
           git tag "v$VERSION"
           git push origin "v$VERSION"
           gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --generate-notes
