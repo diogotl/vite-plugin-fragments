@@ -1,5 +1,12 @@
 # vite-plugin-fragments
 
+## 1.3.0
+
+### Minor Changes
+
+- 7552519: - Include files with any extension (for example `.svg` or `.md`), and `.HTML` in upper case. A path that is a file is used as is; a directory resolves to its `index.html` or `index.htm`.
+  - New option `warn.unresolvedPlaceholders` to warn about `{=$name}` placeholders that receive no value.
+
 ## 1.2.0
 
 ### Minor Changes

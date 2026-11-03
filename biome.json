@@ -11,7 +11,8 @@
 			"!**/node_modules",
 			"!**/pnpm-lock.yaml",
 			"!**/.github",
-			"!**/CHANGELOG.md"
+			"!**/CHANGELOG.md",
+			"!**/.changeset"
 		]
 	},
 	"formatter": {
