@@ -54,6 +54,9 @@
 		"url": "https://github.com/diogotl/vite-plugin-fragments/issues"
 	},
 	"homepage": "https://github.com/diogotl/vite-plugin-fragments#readme",
+	"peerDependencies": {
+		"vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
+	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.6.4",
 		"@changesets/cli": "^3.0.3",

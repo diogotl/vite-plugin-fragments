@@ -10,7 +10,8 @@
 			"!**/dist",
 			"!**/node_modules",
 			"!**/pnpm-lock.yaml",
-			"!**/.github"
+			"!**/.github",
+			"!**/CHANGELOG.md"
 		]
 	},
 	"formatter": {
