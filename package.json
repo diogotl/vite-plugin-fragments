@@ -1,7 +1,7 @@
 {
 	"name": "vite-plugin-fragments",
 	"version": "1.3.1",
-	"description": "Split your index.html into reusable HTML fragments and inject them at build time and in dev.",
+	"description": "Write your HTML in pieces, ship it whole. Build-time and dev-time HTML partials for Vite.",
 	"keywords": [
 		"vite",
 		"vite-plugin",
@@ -15,13 +15,7 @@
 		"loader"
 	],
 	"license": "MIT",
-	"author": "Nikita 'donnikitos' Nitichevski <me@donnikitos.com> (https://donnikitos.com/)",
-	"contributors": [
-		{
-			"name": "Diogo",
-			"url": "https://github.com/diogotl"
-		}
-	],
+	"author": "Diogo (https://github.com/diogotl)",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/diogotl/vite-plugin-fragments.git"

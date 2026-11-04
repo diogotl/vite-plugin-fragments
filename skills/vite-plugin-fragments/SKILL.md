@@ -6,7 +6,7 @@ description: Use when a Vite project uses the vite-plugin-fragments plugin, or w
 
 # vite-plugin-fragments
 
-Build-time and dev-time HTML includes for Vite. Each `<load />` tag in `index.html` is replaced by the content of the file it points to.
+Write your HTML in pieces, ship it whole: build-time and dev-time HTML includes for Vite. Each `<load />` tag in `index.html` is replaced by the content of the file it points to.
 
 ## Setup
 

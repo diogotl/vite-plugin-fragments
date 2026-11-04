@@ -3,9 +3,9 @@
 [![npm](https://img.shields.io/npm/dt/vite-plugin-fragments?style=for-the-badge)](https://www.npmjs.com/package/vite-plugin-fragments) ![GitHub Repo stars](https://img.shields.io/github/stars/diogotl/vite-plugin-fragments?label=GitHub%20Stars&style=for-the-badge) [![GitHub](https://img.shields.io/github/license/diogotl/vite-plugin-fragments?color=blue&style=for-the-badge)](https://github.com/diogotl/vite-plugin-fragments/blob/master/LICENSE)
 ![GitHub last commit](https://img.shields.io/github/last-commit/diogotl/vite-plugin-fragments?style=for-the-badge) [![Issues](https://img.shields.io/github/issues/diogotl/vite-plugin-fragments?style=for-the-badge)](https://github.com/diogotl/vite-plugin-fragments/issues)
 
-Split your `index.html` into smaller, reusable HTML fragments. The plugin inlines them at build time and during development, so you get the benefits of partials without a framework.
+> **Write your HTML in pieces, ship it whole.**
 
-> Fork of [donnikitos/vite-plugin-html-inject](https://github.com/donnikitos/vite-plugin-html-inject) (MIT). See [Credits](#credits).
+Split your `index.html` into small, reusable HTML fragments. The plugin stitches them back together at build time and during development, so you get partials without a framework and without any runtime cost.
 
 ## Contents
 
@@ -18,7 +18,7 @@ Split your `index.html` into smaller, reusable HTML fragments. The plugin inline
 - [Debugging](#debugging)
 - [Development](#development)
 - [For AI agents](#for-ai-agents)
-- [Credits](#credits)
+- [License](#license)
 
 ## Installation
 
@@ -187,12 +187,6 @@ The package ships a usage guide for coding agents at `skills/vite-plugin-fragmen
 
 Projects can also point their own agent instructions (for example `AGENTS.md` or `CLAUDE.md`) at `node_modules/vite-plugin-fragments/skills/vite-plugin-fragments/SKILL.md`.
 
-## Credits
-
-vite-plugin-fragments is a fork of [vite-plugin-html-inject](https://github.com/donnikitos/vite-plugin-html-inject) by [Nikita 'donnikitos' Nitichevski](https://donnikitos.com/), released under the MIT license. The original project is the work of its author; please support it there.
-
-Changes in this fork include fixes for `$` patterns in attribute values and fragments, relative include resolution, a Vitest test suite, Biome, pnpm and updated dependencies.
-
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) © Diogo. Originally based on [vite-plugin-html-inject](https://github.com/donnikitos/vite-plugin-html-inject) by Nikita Nitichevski.
