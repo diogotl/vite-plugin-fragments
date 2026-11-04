@@ -1,5 +1,11 @@
 # vite-plugin-fragments
 
+## 1.3.2
+
+### Patch Changes
+
+- e9a368b: New package description and author metadata; trim fork references in the README.
+
 ## 1.3.1
 
 ### Patch Changes
